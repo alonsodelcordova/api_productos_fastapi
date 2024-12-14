@@ -6,6 +6,16 @@ from peewee import (
     IntegerField
 )
 
+
+class CategoriaModel(BaseModel):
+    nombre = CharField(max_length=255)
+    descripcion = TextField()
+    imagen = CharField(max_length=255, null=True)
+
+    class Meta:
+        table_name = "categorias"
+
+
 class ProductoModel(BaseModel):
     nombre =  CharField(max_length=255)
     descripcion = TextField()
@@ -15,11 +25,3 @@ class ProductoModel(BaseModel):
 
     class Meta:
         table_name = "productos"
-
-class CategoriaModel(BaseModel):
-    nombre = CharField(max_length=255)
-    descripcion = TextField()
-    imagen = CharField(max_length=255, null=True)
-
-    class Meta:
-        table_name = "categorias"

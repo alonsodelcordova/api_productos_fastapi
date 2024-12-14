@@ -1,31 +1,13 @@
 from fastapi import APIRouter
 from models.producto_model import ProductoModel, CategoriaModel
-from pydantic import BaseModel
+from schemas.producto_schema import ProductoSchema, ProductoModelSchema, CategoriaSchema, CategoriaModelSchema
+
 
 producto_router = APIRouter(
     prefix="/producto",
     tags=["Producto"]
 )
 
-class ProductoSchema(BaseModel):
-    nombre: str
-    precio: float
-    stock: int
-    descripcion: str
-
-class ProductoModelSchema(ProductoSchema):
-    id : int
-    class Config:
-        orm_mode = True
-
-class CategoriaSchema(BaseModel):
-    nombre: str
-    descripcion: str
-
-class CategoriaModelSchema(CategoriaSchema):
-    id: int
-    class Config:
-        orm_mode = True
 
 @producto_router.get("/", response_model = list[ProductoModelSchema])
 async def getProducts():
@@ -62,6 +44,8 @@ async def elminarProducto(id: int):
     producto.delete_instance()
     return {"message": "Producto eliminado"}
 
+
+
 @producto_router.get("/categoria", response_model = list[CategoriaModelSchema])
 async def get_categoria():
     data = CategoriaModel.select()
@@ -74,3 +58,11 @@ async def registrarCategoria(categoria_schema: CategoriaSchema):
     )
     categoria.save()
     return categoria
+
+@producto_router.delete("/categoria/{id}")
+async def eliminarCategoria(id: int):
+    categoria = CategoriaModel.get_or_none(id = id)
+    if not categoria:
+        return {"message": "Categoria no encontrada"}
+    categoria.delete_instance()
+    return {"message": "Categoria eliminada"}
